@@ -19,7 +19,7 @@ namespace MyWebApp.Data.Seed
                 Console.WriteLine("✅ Database migrated successfully.");
 
                 // Step 1: Create Users
-                var admin = EnsureUser(context, "Admin", "Admin", "admin@gmail.com", UserRole.Admin);
+                var admin = EnsureUser(context, "Admin", "Admin-", "admin@gmail.com", UserRole.Admin);
                 var alice = EnsureUser(context, "", "", "alice@example.com", UserRole.Admin);
                 var bob = EnsureUser(context, "Bob", "Johnson", "bob@example.com", UserRole.User);
                 var charlie = EnsureUser(context, "Charlie", "Brown", "charlie@example.com", UserRole.User);
@@ -35,6 +35,12 @@ namespace MyWebApp.Data.Seed
                 if (bob != null) DeleteUser(context, bob, hardDelete: false);
                 
                 if (charlie != null) DeleteUser(context, charlie, hardDelete: true);
+
+                if (admin != null)
+                {
+                    admin.LastName = "Admin"; // Update the last name
+                    context.SaveChanges(); // Save changes to the database
+                }
 
                 Console.WriteLine("✅ Seeding process completed.");
             }
@@ -105,15 +111,12 @@ namespace MyWebApp.Data.Seed
             {
                 if (hardDelete)
                 {
-                    context.HardDeleteMode = true;
                     context.Users.Remove(user);
                     context.SaveChanges();
                 }
                 else
                 {
-                    context.HardDeleteMode = false;
-                    user.Status = UserStatus.Inactive; // Soft delete by updating status
-                    context.Users.Update(user);
+                    context.ApplySoftDelete(user);
                     context.SaveChanges();
                 }
             }

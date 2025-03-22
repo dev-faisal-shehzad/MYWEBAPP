@@ -19,17 +19,10 @@ namespace MyWebApp.Data
 
         public DbSet<Post> Posts { get; set; }
 
-        public bool HardDeleteMode { get; set; } = false;
-        public bool validate { get; set; } = true;
-
         public override int SaveChanges()
         {
             ApplyInterceptors(ChangeTracker);
             ApplyTimestamps();
-            if (HardDeleteMode == false)
-            {
-                HandleSoftDelete();
-            }
             return base.SaveChanges();
         }
 
@@ -57,26 +50,18 @@ namespace MyWebApp.Data
             }
         }
 
-        private void HandleSoftDelete()
+        public bool ApplySoftDelete<T>(T entity) where T : class
         {
-            foreach (var entry in ChangeTracker.Entries())
+            var entry = ChangeTracker.Entries<T>().FirstOrDefault(e => e.Entity == entity);
+
+            if (entry != null && entry.Properties.Any(p => p.Metadata.Name == "IsDeleted"))
             {
-                if (entry.State == EntityState.Modified && entry.Properties.Any(p => p.Metadata.Name == "IsDeleted"))
-                {
-                    entry.Property("IsDeleted").CurrentValue = true;
-                    entry.Property("DeletedAt").CurrentValue = DateTime.UtcNow;
-                    entry.State = EntityState.Modified;
-                }
+                entry.Property("IsDeleted").CurrentValue = true;
+                entry.Property("DeletedAt").CurrentValue = DateTime.UtcNow;
+                entry.State = EntityState.Modified;
+                return true;
             }
+            return false;
         }
-
-        public void HardDelete<T>(T entity) where T : class
-        {
-            HardDeleteMode = true;
-            Remove(entity);
-            base.SaveChanges();
-            HardDeleteMode = false;
-        }
-
     }
 }
