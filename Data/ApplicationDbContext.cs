@@ -61,7 +61,7 @@ namespace MyWebApp.Data
         {
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.State == EntityState.Deleted && entry.Properties.Any(p => p.Metadata.Name == "IsDeleted"))
+                if (entry.State == EntityState.Modified && entry.Properties.Any(p => p.Metadata.Name == "IsDeleted"))
                 {
                     entry.Property("IsDeleted").CurrentValue = true;
                     entry.Property("DeletedAt").CurrentValue = DateTime.UtcNow;

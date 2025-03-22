@@ -134,7 +134,7 @@ namespace MyWebApp.Data.Seed
                 {
                     context.HardDeleteMode = false;
                     user.Status = UserStatus.Inactive; // Soft delete by updating status
-                    context.Users.Update(user);
+                    // context.Users.Update(user);
                     context.SaveChanges();
                 }
             }
