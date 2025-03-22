@@ -20,36 +20,21 @@ namespace MyWebApp.Data.Seed
 
                 // Step 1: Create Users
                 var admin = EnsureUser(context, "Admin", "Admin", "admin@gmail.com", UserRole.Admin);
-                var alice = EnsureUser(context, "", "Smith", "alice@example.com", UserRole.Admin);
+                var alice = EnsureUser(context, "", "", "alice@example.com", UserRole.Admin);
                 var bob = EnsureUser(context, "Bob", "Johnson", "bob@example.com", UserRole.User);
                 var charlie = EnsureUser(context, "Charlie", "Brown", "charlie@example.com", UserRole.User);
 
                 // Step 2: Create Posts (Only after users exist)
-                if (alice != null) 
-                {
-                    EnsurePost(context, alice, "Alice's Post");
-                }
+                if (alice != null) EnsurePost(context, alice, "Alice's Post");
                 
-                if (bob != null) 
-                {
-                    EnsurePost(context, bob, "Bob's Post");
-                }
+                if (bob != null) EnsurePost(context, bob, "Bob's Post");
                 
-                if (charlie != null) 
-                {
-                    EnsurePost(context, charlie, "Charlie's Post");
-                }
+                if (charlie != null) EnsurePost(context, charlie, "Charlie's Post");
 
                 // Step 3: Perform Deletions (After everything else)
-                if (bob != null) 
-                {
-                    DeleteUser(context, bob, hardDelete: false);
-                }
+                if (bob != null) DeleteUser(context, bob, hardDelete: false);
                 
-                if (charlie != null) 
-                {
-                    DeleteUser(context, charlie, hardDelete: true);
-                }
+                if (charlie != null) DeleteUser(context, charlie, hardDelete: true);
 
                 Console.WriteLine("✅ Seeding process completed.");
             }
@@ -74,11 +59,8 @@ namespace MyWebApp.Data.Seed
                     };
 
                     // Validate before adding
-                    if (!ValidationHelper.ValidateEntity(user))
-                    {
-                        Console.WriteLine($"❌ User {email} failed validation and will not be added.");
-                        return null;
-                    }
+                    var validationResults = ValidationHelper.ValidateEntity(user);
+                    if (validationResults.Count > 0) return null;
 
                     context.Users.Add(user);
                     context.SaveChanges();
@@ -105,11 +87,8 @@ namespace MyWebApp.Data.Seed
                 };
 
                 // Validate before adding
-                if (!ValidationHelper.ValidateEntity(post))
-                {
-                    Console.WriteLine($"❌ Post for {author.Email} failed validation and will not be added.");
-                    return;
-                }
+                var validationResults = ValidationHelper.ValidateEntity(post);
+                if (validationResults.Count > 0) return;
 
                 context.Posts.Add(post);
                 context.SaveChanges();
@@ -134,7 +113,7 @@ namespace MyWebApp.Data.Seed
                 {
                     context.HardDeleteMode = false;
                     user.Status = UserStatus.Inactive; // Soft delete by updating status
-                    // context.Users.Update(user);
+                    context.Users.Update(user);
                     context.SaveChanges();
                 }
             }
