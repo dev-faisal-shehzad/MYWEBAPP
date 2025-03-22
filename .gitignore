@@ -52,3 +52,59 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+bin/
+obj/
+.vscode/
+*.user
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.cache
+*.sw?
+*.pidb
+*.pdb
+*.ilk
+*.sdf
+*.sqlite
+*.sqlite-journal
+*.tlog
+*.log
+*.cache
+*.csproj.user
+*.dotCover
+*.pidb
+*.sconsign.dblite
+
+# OS-Specific
+.DS_Store
+Thumbs.db
+
+# Rider / JetBrains
+.idea/
+*.iml
+
+# Entity Framework Migrations
+Migrations/
+
+# Secrets and Configs
+appsettings.Local.json
+secrets.json
+.env
+
+# Dependencies
+node_modules/
+wwwroot/lib/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+**/Dockerfile
+**/docker-compose*.yml

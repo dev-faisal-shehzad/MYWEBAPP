@@ -1,0 +1,36 @@
+@model IEnumerable<MyWebApp.Models.User>
+
+@{
+    ViewData["Title"] = "User List";
+}
+
+<h2>User List</h2>
+<a href="/User/Create" class="btn btn-primary">Create New User</a>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
+                <td>
+                    <a href="/User/Details/@user.Id" class="btn btn-info">Details</a>
+                    <a href="/User/Edit/@user.Id" class="btn btn-warning">Edit</a>
+                    <a href="/User/Delete/@user.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
