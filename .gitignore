@@ -85,7 +85,7 @@ Thumbs.db
 *.iml
 
 # Entity Framework Migrations
-Migrations/
+
 
 # Secrets and Configs
 appsettings.Local.json

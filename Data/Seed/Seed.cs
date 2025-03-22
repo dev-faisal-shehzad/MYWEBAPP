@@ -19,7 +19,7 @@ namespace MyWebApp.Data.Seed
                 Console.WriteLine("✅ Database migrated successfully.");
 
                 // Step 1: Create Users
-                var alice = EnsureUser(context, "", "Smith", "alice@example.com", UserRole.Admin);
+                var alice = EnsureUser(context, "Alice", "Smith", "alice@example.com", UserRole.Admin);
                 context.SaveChanges(); // Ensure Alice is saved before proceeding
 
                 var bob = EnsureUser(context, "Bob", "Johnson", "bob@example.com", UserRole.User);
