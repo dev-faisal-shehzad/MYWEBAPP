@@ -19,45 +19,35 @@ namespace MyWebApp.Data.Seed
                 Console.WriteLine("✅ Database migrated successfully.");
 
                 // Step 1: Create Users
-                var alice = EnsureUser(context, "Alice", "Smith", "alice@example.com", UserRole.Admin);
-                context.SaveChanges(); // Ensure Alice is saved before proceeding
-
+                var alice = EnsureUser(context, "", "Smith", "alice@example.com", UserRole.Admin);
                 var bob = EnsureUser(context, "Bob", "Johnson", "bob@example.com", UserRole.User);
-                context.SaveChanges(); // Ensure Bob is saved
-
                 var charlie = EnsureUser(context, "Charlie", "Brown", "charlie@example.com", UserRole.User);
-                context.SaveChanges(); // Ensure Charlie is saved
 
                 // Step 2: Create Posts (Only after users exist)
                 if (alice != null) 
                 {
                     EnsurePost(context, alice, "Alice's Post");
-                    context.SaveChanges(); // Save Alice's post before next user
                 }
                 
                 if (bob != null) 
                 {
                     EnsurePost(context, bob, "Bob's Post");
-                    context.SaveChanges(); // Save Bob's post
                 }
                 
                 if (charlie != null) 
                 {
                     EnsurePost(context, charlie, "Charlie's Post");
-                    context.SaveChanges(); // Save Charlie's post
                 }
 
                 // Step 3: Perform Deletions (After everything else)
                 if (bob != null) 
                 {
                     DeleteUser(context, bob, hardDelete: false);
-                    context.SaveChanges(); // Ensure soft delete is applied
                 }
                 
                 if (charlie != null) 
                 {
                     DeleteUser(context, charlie, hardDelete: true);
-                    context.SaveChanges(); // Ensure hard delete is applied
                 }
 
                 Console.WriteLine("✅ Seeding process completed.");
@@ -90,7 +80,7 @@ namespace MyWebApp.Data.Seed
                     }
 
                     context.Users.Add(user);
-                    Console.WriteLine($"✅ User created: {email}");
+                    context.SaveChanges();
                 }
                 return user;
             }
@@ -121,7 +111,7 @@ namespace MyWebApp.Data.Seed
                 }
 
                 context.Posts.Add(post);
-                Console.WriteLine($"✅ Post created: {post.Name} for user {author.Email}");
+                context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -137,14 +127,14 @@ namespace MyWebApp.Data.Seed
                 {
                     context.HardDeleteMode = true;
                     context.Users.Remove(user);
-                    Console.WriteLine($"🗑️ Hard deleted user: {user.Email}");
+                    context.SaveChanges();
                 }
                 else
                 {
                     context.HardDeleteMode = false;
                     user.Status = UserStatus.Inactive; // Soft delete by updating status
                     context.Users.Update(user);
-                    Console.WriteLine($"🚫 Soft deleted user: {user.Email}");
+                    context.SaveChanges();
                 }
             }
             catch (Exception ex)
