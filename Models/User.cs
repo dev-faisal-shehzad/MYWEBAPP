@@ -35,7 +35,7 @@ namespace MyWebApp.Models
     [Index(nameof(Gender))]
     [Index(nameof(IsDeleted))]
     [Index(nameof(EmailConfirmed))]
-    public class User : IdentityUser<int>
+    public class User : IdentityUser<int>, IValidatableObject
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -49,7 +49,7 @@ namespace MyWebApp.Models
         [StringLength(60, MinimumLength = 3, ErrorMessage = "Last name must be between 3 and 60 characters.")]
         public string LastName { get; set; } = string.Empty;
 
-        [Required, EmailAddress]
+        [Required]
         public override string Email { get; set; } = string.Empty;
 
         [Required]
@@ -70,14 +70,29 @@ namespace MyWebApp.Models
 
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow; // Manually updated
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         [Required]
         public bool IsDeleted { get; set; } = false;
 
         public DateTime? DeletedAt { get; set; } // Nullable DateTime
 
+        [NotMapped]
+        public bool BypassValidation { get; set; } = false;
+
         // ✅ One-to-Many Relationship: One User has Many Posts
         public ICollection<Post> Posts { get; set; } = new List<Post>();
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (BypassValidation)
+            {
+                yield break;
+            }
+            if (string.IsNullOrEmpty(Email) || !Email.Contains("@"))
+            {
+                yield return new ValidationResult("Invalid email format. Email must contain '@'.", new[] { nameof(Email) });
+            }
+        }
     }
 }

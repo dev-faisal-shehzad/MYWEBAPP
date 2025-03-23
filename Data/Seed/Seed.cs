@@ -19,8 +19,8 @@ namespace MyWebApp.Data.Seed
                 Console.WriteLine("✅ Database migrated successfully.");
 
                 // Step 1: Create Users
-                var admin = EnsureUser(context, "Admin", "Admin-", "admin@gmail.com", UserRole.Admin);
-                var alice = EnsureUser(context, "", "", "alice@example.com", UserRole.Admin);
+                var admin = EnsureUser(context, "Admin", "Admin-", "admingmail.com", UserRole.Admin, true);
+                var alice = EnsureUser(context, "", "", "aliceexample.com", UserRole.Admin);
                 var bob = EnsureUser(context, "Bob", "Johnson", "bob@example.com", UserRole.User);
                 var charlie = EnsureUser(context, "Charlie", "Brown", "charlie@example.com", UserRole.User);
 
@@ -46,7 +46,7 @@ namespace MyWebApp.Data.Seed
             }
         }
 
-        private static User EnsureUser(ApplicationDbContext context, string firstName, string lastName, string email, UserRole role)
+        private static User EnsureUser(ApplicationDbContext context, string firstName, string lastName, string email, UserRole role, bool BypassValidation = false)
         {
             try
             {
@@ -61,7 +61,8 @@ namespace MyWebApp.Data.Seed
                         PasswordHash = "123456",
                         Role = role,
                         Status = UserStatus.Active,
-                        Gender = UserGender.Male
+                        Gender = UserGender.Male,
+                        BypassValidation = BypassValidation
                     };
 
                     // Validate before adding
